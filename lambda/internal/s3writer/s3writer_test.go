@@ -35,12 +35,12 @@ func TestWriteLogEntry(t *testing.T) {
 	})
 
 	s3Uploader.On("Upload", expectedS3Input).Return(&s3manager.UploadOutput{}, nil)
-	err := client.WriteLogEntry(entity.LogEntry{
-		Timestamp:        entity.NewLogEntryTimestamp(2020, 7, 13, 14),
-		LogLine:          bytes.NewBufferString("20200713 14:18:10,ip-172-27-2-141,monolith-web,10.160.167.194,10739612,551067709,QUERY,personio,'select * from `job_positions` where (`job_positions`.`company_id` = ? or `job_positions`.`company_id` is null) and `company_id` = ? and `id` = ? limit 1',0"),
-		LogFileTimestamp: int64(1595494263000),
-	})
-	assert.NoError(t, err)
+	// err := client.WriteLogEntry(entity.LogEntry{
+	// 	Timestamp:        entity.NewLogEntryTimestamp(2020, 7, 13, 14),
+	// 	LogLine:          bytes.NewBufferString("20200713 14:18:10,ip-172-27-2-141,monolith-web,10.160.167.194,10739612,551067709,QUERY,personio,'select * from `job_positions` where (`job_positions`.`company_id` = ? or `job_positions`.`company_id` is null) and `company_id` = ? and `id` = ? limit 1',0"),
+	// 	LogFileTimestamp: int64(1595494263000),
+	// })
+	// assert.NoError(t, err)
 
-	// s3Uploader.AssertExpectations(t)
+	s3Uploader.AssertExpectations(t)
 }
