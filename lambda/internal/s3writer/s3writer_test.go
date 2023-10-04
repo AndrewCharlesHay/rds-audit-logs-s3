@@ -42,7 +42,7 @@ func TestWriteLogEntry(t *testing.T) {
 	})
 	log.WithField("key", err).Info("DEBUG STATEMENT 1")
 
-	assert.NoError(t, nil)
+	assert.NoError(t, err)
 
 	s3Uploader.AssertExpectations(t)
 }
