@@ -40,6 +40,8 @@ func TestWriteLogEntry(t *testing.T) {
 		LogLine:          bytes.NewBufferString("20200713 14:18:10,ip-172-27-2-141,monolith-web,10.160.167.194,10739612,551067709,QUERY,personio,'select * from `job_positions` where (`job_positions`.`company_id` = ? or `job_positions`.`company_id` is null) and `company_id` = ? and `id` = ? limit 1',0"),
 		LogFileTimestamp: int64(1595494263000),
 	})
+	log.WithField("key", s3Uploader).Info("DEBUG STATEMENT 1")
+
 	assert.NoError(t, nil)
 
 	s3Uploader.AssertExpectations(t)
