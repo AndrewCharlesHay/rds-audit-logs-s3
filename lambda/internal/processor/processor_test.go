@@ -68,8 +68,8 @@ func TestProcessOneLogCallback(t *testing.T) {
 
 	initialMarker := int64(0)
 	nextMarker := int64(2)
-	logLineDate := entity.NewLogEntryTimestamp(2020, 7, 14, 7)
-	logLine := "20200714 07:05:25,ip-172-27-1-97,rdsadmin,localhost,26,47141561040897,QUERY,mysql,'SELECT NAME, VALUE FROM mysql.rds_configuration',0"
+	logLineDate := entity.NewLogEntryTimestamp(2023, 10, 05, 17)
+	logLine := "20231005 17:25:25,ip-172-27-1-97,rdsadmin,localhost,26,47141561040897,QUERY,mysql,'SELECT NAME, VALUE FROM mysql.rds_configuration',0"
 
 	lc.On("ValidateAndPrepareRDSInstance").Return(nil)
 	lc.On("GetLogs", initialMarker).Return(strings.NewReader(logLine), true, nextMarker, nil).Once()
