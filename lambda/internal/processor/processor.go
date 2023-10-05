@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"time"
 	"github.com/sirupsen/logrus"
-	"rdsauditlogss3/internal/entity"
 	"rdsauditlogss3/internal/logcollector"
 	"rdsauditlogss3/internal/parser"
 	"rdsauditlogss3/internal/s3writer"
@@ -50,7 +49,7 @@ func (p *Processor) Process() error {
     fmt.Println("now:", now)
 
     count := 40
-    currentLogFileTimestamp := now.Add(time.Duration(-count) * time.Minute)
+    currentLogFileTimestamp := now.Add(time.Duration(-count) * time.Minute).Unix()
 	processedLogFiles := 0
 
 	for {
