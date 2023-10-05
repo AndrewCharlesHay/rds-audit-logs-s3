@@ -91,7 +91,7 @@ func TestProcessOneLogCallback(t *testing.T) {
 	})
 	w.On("WriteLogEntry", expectedWriteLogEntryInput).Return(nil)
 
-	processor := NewProcessor(db, lc, w, p, TestRdsInstanceIdentifier)
+	processor := NewProcessor(lc, w, p, TestRdsInstanceIdentifier)
 	err := processor.Process()
 	assert.NoError(t, err)
 
@@ -150,7 +150,7 @@ func TestProcessMultiLogCallback(t *testing.T) {
 	})
 	w.On("WriteLogEntry", expectedWriteLogEntryInput3).Return(nil)
 
-	processor := NewProcessor(db, lc, w, p, TestRdsInstanceIdentifier)
+	processor := NewProcessor(lc, w, p, TestRdsInstanceIdentifier)
 	err := processor.Process()
 	assert.NoError(t, err)
 

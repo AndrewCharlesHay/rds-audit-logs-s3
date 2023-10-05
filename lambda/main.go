@@ -61,10 +61,6 @@ func main() {
 	// Create & start lambda handler
 	lh := &lambdaHandler{
 		processor: processor.NewProcessor(
-			database.NewDynamoDb(
-				dynamodb.New(sess),
-				c.DynamoDbTableName,
-			),
 			logcollector.NewRdsLogCollector(
 				rds.New(sess),
 				logcollector.NewAWSHttpClient(sess),
