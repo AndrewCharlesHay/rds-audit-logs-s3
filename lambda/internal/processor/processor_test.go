@@ -63,24 +63,13 @@ func (m *mockWriter) WriteLogEntry(data entity.LogEntry) error {
 
 func TestProcessOneLogCallback(t *testing.T) {
 	p := parser.NewAuditLogParser()
-	db := new(mockDatabase)
 	lc := new(mockLogCollector)
 	w := new(mockWriter)
 
-	id := fmt.Sprintf("%s:%s", TestRdsInstanceIdentifier, "audit")
 	initialMarker := int64(0)
 	nextMarker := int64(2)
 	logLineDate := entity.NewLogEntryTimestamp(2020, 7, 14, 7)
 	logLine := "20200714 07:05:25,ip-172-27-1-97,rdsadmin,localhost,26,47141561040897,QUERY,mysql,'SELECT NAME, VALUE FROM mysql.rds_configuration',0"
-
-	db.On("GetCheckpoint", id).Return(&entity.CheckpointRecord{
-		LogFileTimestamp: initialMarker,
-		Id:               id,
-	}, nil)
-	db.On("StoreCheckpoint", &entity.CheckpointRecord{
-		LogFileTimestamp: nextMarker,
-		Id:               id,
-	}).Return(nil)
 
 	lc.On("ValidateAndPrepareRDSInstance").Return(nil)
 	lc.On("GetLogs", initialMarker).Return(strings.NewReader(logLine), true, nextMarker, nil).Once()
@@ -95,14 +84,12 @@ func TestProcessOneLogCallback(t *testing.T) {
 	err := processor.Process()
 	assert.NoError(t, err)
 
-	db.AssertExpectations(t)
 	lc.AssertExpectations(t)
 	w.AssertExpectations(t)
 }
 
 func TestProcessMultiLogCallback(t *testing.T) {
 	p := parser.NewAuditLogParser()
-	db := new(mockDatabase)
 	lc := new(mockLogCollector)
 	w := new(mockWriter)
 
@@ -117,19 +104,6 @@ func TestProcessMultiLogCallback(t *testing.T) {
 	logLine2 := "20200714 08:05:30,ip-172-27-1-97,rdsadmin,localhost,26,47141561040897,QUERY,mysql,'SELECT NAME, VALUE FROM mysql.rds_configuration',0"
 	logLine3Date := entity.NewLogEntryTimestamp(2020, 7, 14, 9)
 	logLine3 := "20200714 09:06:30,ip-172-27-1-97,rdsadmin,localhost,26,47141561040897,QUERY,mysql,'SELECT NAME, VALUE FROM mysql.rds_configuration',0"
-
-	db.On("GetCheckpoint", id).Return(&entity.CheckpointRecord{
-		LogFileTimestamp: logFileTimestamp1,
-		Id:               id,
-	}, nil)
-	db.On("StoreCheckpoint", &entity.CheckpointRecord{
-		LogFileTimestamp: logFileTimestamp2,
-		Id:               id,
-	}).Return(nil)
-	db.On("StoreCheckpoint", &entity.CheckpointRecord{
-		LogFileTimestamp: logFileTimestamp3,
-		Id:               id,
-	}).Return(nil)
 
 	lc.On("ValidateAndPrepareRDSInstance").Return(nil)
 	lc.On("GetLogs", logFileTimestamp1).Return(strings.NewReader(fmt.Sprintf("%s\n%s",logLine1,logLine2)), true, logFileTimestamp2, nil).Once()
@@ -154,7 +128,6 @@ func TestProcessMultiLogCallback(t *testing.T) {
 	err := processor.Process()
 	assert.NoError(t, err)
 
-	db.AssertExpectations(t)
 	lc.AssertExpectations(t)
 	w.AssertExpectations(t)
 }

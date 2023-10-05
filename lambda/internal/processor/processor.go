@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"time"
 	"github.com/sirupsen/logrus"
-	"rdsauditlogss3/internal/database"
 	"rdsauditlogss3/internal/entity"
 	"rdsauditlogss3/internal/logcollector"
 	"rdsauditlogss3/internal/parser"
