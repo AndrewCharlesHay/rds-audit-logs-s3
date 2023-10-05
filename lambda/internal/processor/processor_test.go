@@ -93,7 +93,6 @@ func TestProcessMultiLogCallback(t *testing.T) {
 	lc := new(mockLogCollector)
 	w := new(mockWriter)
 
-	id := fmt.Sprintf("%s:%s", TestRdsInstanceIdentifier, "audit")
 	logFileTimestamp1 := int64(1)
 	logFileTimestamp2 := int64(2)
 	logFileTimestamp3 := int64(3)
