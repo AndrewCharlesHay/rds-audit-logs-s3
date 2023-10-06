@@ -10,7 +10,6 @@ import (
 	parser "rdsauditlogss3/internal/parser"
 	"rdsauditlogss3/internal/s3writer"
 	"io"
-	"strings"
 	"testing"
 )
 
@@ -78,7 +77,7 @@ func TestProcessMultiLogCallback(t *testing.T) {
 	logLine3 := "20200714 09:06:30,ip-172-27-1-97,rdsadmin,localhost,26,47141561040897,QUERY,mysql,'SELECT NAME, VALUE FROM mysql.rds_configuration',0"
 
 	lc.On("ValidateAndPrepareRDSInstance").Return(nil)
-	crap, boo, time, nada := lc.GetLogs(logFileTimestamp1)
+	sample, boo, time, nada := lc.GetLogs(logFileTimestamp1)
 
 	expectedWriteLogEntryInput := mock.MatchedBy(func(data entity.LogEntry) bool {
 		return data.Timestamp == logLine1Date && data.LogLine.String() == fmt.Sprintf("%s\n", logLine1) && data.LogFileTimestamp == logFileTimestamp2
@@ -97,5 +96,9 @@ func TestProcessMultiLogCallback(t *testing.T) {
 	err := processor.Process()
 	assert.NoError(t, err)
 
-	assert.GreaterOrEqual(t, 2, 1)
+	assert.True(t, boo)
+	assert.Nil(t, nada)
+	assert.NotNil(t, sample)
+
+	assert.GreaterOrEqual(t, time, 1)
 }
