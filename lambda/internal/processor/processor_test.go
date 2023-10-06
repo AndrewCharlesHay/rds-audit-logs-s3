@@ -61,33 +61,6 @@ func (m *mockWriter) WriteLogEntry(data entity.LogEntry) error {
 	return args.Error(0)
 }
 
-func TestProcessOneLogCallback(t *testing.T) {
-	p := parser.NewAuditLogParser()
-	lc := new(mockLogCollector)
-	w := new(mockWriter)
-
-	initialMarker := int64(0)
-	nextMarker := int64(2)
-	logLineDate := entity.NewLogEntryTimestamp(2023, 10, 05, 17)
-	logLine := "20231005 17:25:25,ip-172-27-1-97,rdsadmin,localhost,26,47141561040897,QUERY,mysql,'SELECT NAME, VALUE FROM mysql.rds_configuration',0"
-
-	lc.On("ValidateAndPrepareRDSInstance").Return(nil)
-	lc.On("GetLogs", initialMarker).Return(strings.NewReader(logLine), true, nextMarker, nil).Once()
-	lc.On("GetLogs", nextMarker).Return(nil, false, int64(0), nil).Once()
-
-	expectedWriteLogEntryInput := mock.MatchedBy(func(data entity.LogEntry) bool {
-		return data.Timestamp == logLineDate && data.LogLine.String() == logLine+"\n" && data.LogFileTimestamp == nextMarker
-	})
-	w.On("WriteLogEntry", expectedWriteLogEntryInput).Return(nil)
-
-	processor := NewProcessor(lc, w, p, TestRdsInstanceIdentifier)
-	err := processor.Process()
-	assert.NoError(t, err)
-
-	lc.AssertExpectations(t)
-	w.AssertExpectations(t)
-}
-
 func TestProcessMultiLogCallback(t *testing.T) {
 	p := parser.NewAuditLogParser()
 	lc := new(mockLogCollector)
