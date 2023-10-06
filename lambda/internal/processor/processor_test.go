@@ -78,9 +78,7 @@ func TestProcessMultiLogCallback(t *testing.T) {
 	logLine3 := "20200714 09:06:30,ip-172-27-1-97,rdsadmin,localhost,26,47141561040897,QUERY,mysql,'SELECT NAME, VALUE FROM mysql.rds_configuration',0"
 
 	lc.On("ValidateAndPrepareRDSInstance").Return(nil)
-	lc.On("GetLogs", logFileTimestamp1).Return(strings.NewReader(fmt.Sprintf("%s\n%s",logLine1,logLine2)), true, logFileTimestamp2, nil).Once()
-	lc.On("GetLogs", logFileTimestamp2).Return(strings.NewReader(logLine3), true, logFileTimestamp3, nil).Once()
-
+	crap, boo, time, nada := lc.GetLogs(logFileTimestamp1)
 
 	expectedWriteLogEntryInput := mock.MatchedBy(func(data entity.LogEntry) bool {
 		return data.Timestamp == logLine1Date && data.LogLine.String() == fmt.Sprintf("%s\n", logLine1) && data.LogFileTimestamp == logFileTimestamp2
