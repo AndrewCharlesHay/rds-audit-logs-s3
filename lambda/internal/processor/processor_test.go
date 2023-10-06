@@ -44,11 +44,6 @@ func (m *mockLogCollector) GetLogs(timestamp int64) (io.Reader, bool, int64, err
 	return args.Get(0).(io.Reader), args.Get(1).(bool), args.Get(2).(int64), args.Error(3)
 }
 
-func (m *mockLogCollector) ValidateAndPrepareRDSInstance() error {
-	args := m.Called()
-	return args.Error(0)
-}
-
 type mockWriter struct {
 	s3writer.Writer
 	mock.Mock
