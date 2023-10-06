@@ -1,7 +1,6 @@
 package processor
 
 import (
-	"fmt"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"rdsauditlogss3/internal/database"
