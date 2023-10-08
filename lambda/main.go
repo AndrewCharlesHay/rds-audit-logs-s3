@@ -6,12 +6,10 @@ import (
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/rds"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"github.com/kelseyhightower/envconfig"
 	log "github.com/sirupsen/logrus"
-	"rdsauditlogss3/internal/database"
 	"rdsauditlogss3/internal/logcollector"
 	"rdsauditlogss3/internal/parser"
 	"rdsauditlogss3/internal/processor"
@@ -61,16 +59,12 @@ func main() {
 	// Create & start lambda handler
 	lh := &lambdaHandler{
 		processor: processor.NewProcessor(
-			database.NewDynamoDb(
-				dynamodb.New(sess),
-				c.DynamoDbTableName,
-			),
 			logcollector.NewRdsLogCollector(
 				rds.New(sess),
 				logcollector.NewAWSHttpClient(sess),
 				c.AwsRegion,
 				c.RdsInstanceIdentifier,
-				"mysql",
+				"postgres",
 			),
 			s3writer.NewS3Writer(
 				s3manager.NewUploader(sess),

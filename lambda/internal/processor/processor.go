@@ -2,26 +2,22 @@ package processor
 
 import (
 	"fmt"
-
+	"time"
 	"github.com/sirupsen/logrus"
-	"rdsauditlogss3/internal/database"
-	"rdsauditlogss3/internal/entity"
 	"rdsauditlogss3/internal/logcollector"
 	"rdsauditlogss3/internal/parser"
 	"rdsauditlogss3/internal/s3writer"
 )
 
 type Processor struct {
-	database              database.Database
 	logcollector          logcollector.LogCollector
 	S3Writer              s3writer.Writer
 	Parser                parser.Parser
 	RdsInstanceIdentifier string
 }
 
-func NewProcessor(db database.Database, lc logcollector.LogCollector, w s3writer.Writer, p parser.Parser, rdsInstanceIdentifier string) *Processor {
+func NewProcessor(lc logcollector.LogCollector, w s3writer.Writer, p parser.Parser, rdsInstanceIdentifier string) *Processor {
 	return &Processor{
-		database:              db,
 		logcollector:          lc,
 		S3Writer:              w,
 		Parser:                p,
@@ -37,17 +33,23 @@ func (p *Processor) Process() error {
 	}
 
 	// Get current checkpoint from database
-	id := fmt.Sprintf("%s:%s", p.RdsInstanceIdentifier, "audit")
-	checkpointRecord, err := p.database.GetCheckpoint(id)
-	if err != nil {
-		return fmt.Errorf("could not get marker: %v", err)
-	}
+	// id := fmt.Sprintf("%s:%s", p.RdsInstanceIdentifier, "audit")
+	// checkpointRecord, err := p..GetCheckpoint(id)
+	// if err != nil {
+	// 	return fmt.Errorf("could not get marker: %v", err)
+	// }
 
-	currentLogFileTimestamp := int64(0)
-	if checkpointRecord != nil {
-		currentLogFileTimestamp = checkpointRecord.LogFileTimestamp
-	}
+	// currentLogFileTimestamp := int64(0)
+	// if checkpointRecord != nil {
+	// 	currentLogFileTimestamp = checkpointRecord.LogFileTimestamp
+	// }
 
+    now := time.Now()
+
+    fmt.Println("now:", now)
+
+    count := 40
+    currentLogFileTimestamp := now.Add(time.Duration(-count) * time.Minute).Unix()
 	processedLogFiles := 0
 
 	for {
@@ -82,13 +84,13 @@ func (p *Processor) Process() error {
 		}
 
 		logrus.WithField("logfile_timestamp", currentLogFileTimestamp).Info("StoreCheckpoint")
-		err = p.database.StoreCheckpoint(&entity.CheckpointRecord{
-			LogFileTimestamp: currentLogFileTimestamp,
-			Id:               id,
-		})
-		if err != nil {
-			return fmt.Errorf("could not save marker: %v", err)
-		}
+		// err = p.database.StoreCheckpoint(&entity.CheckpointRecord{
+		// 	LogFileTimestamp: currentLogFileTimestamp,
+		// 	Id:               id,
+		// })
+		// if err != nil {
+		// 	return fmt.Errorf("could not save marker: %v", err)
+		// }
 	}
 
 	logrus.WithFields(logrus.Fields{"processed_log_files": processedLogFiles}).Info("Processing logs is finished")
