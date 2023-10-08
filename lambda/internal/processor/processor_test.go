@@ -4,11 +4,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"rdsauditlogss3/internal/database"
-	"rdsauditlogss3/internal/entity"
-	"rdsauditlogss3/internal/logcollector"
 	parser "rdsauditlogss3/internal/parser"
-	"rdsauditlogss3/internal/s3writer"
-	"io"
 	"testing"
 )
 
