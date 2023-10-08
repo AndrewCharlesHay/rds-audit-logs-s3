@@ -3,7 +3,6 @@ package logcollector
 import (
 	"net/http"
 	"time"
-
 	"github.com/aws/aws-sdk-go/aws/session"
 	v4 "github.com/aws/aws-sdk-go/aws/signer/v4"
 )

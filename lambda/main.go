@@ -64,7 +64,7 @@ func main() {
 				logcollector.NewAWSHttpClient(sess),
 				c.AwsRegion,
 				c.RdsInstanceIdentifier,
-				"mysql",
+				"postgres",
 			),
 			s3writer.NewS3Writer(
 				s3manager.NewUploader(sess),
