@@ -25,7 +25,7 @@ type mockLogCollector struct {
 }
 
 func (m *mockLogCollector) ValidateAndPrepareRDSInstance() error {
-	return args.Error(0)
+	return nil
 }
 
 type mockWriter struct {
