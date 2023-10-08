@@ -12,8 +12,18 @@ const (
 	TestRdsInstanceIdentifier = "my-instance"
 )
 
+type mockLogCollector struct {
+	logcollector.LogCollector
+	mock.Mock
+}
+
 type mockDatabase struct {
 	database.Database
+	mock.Mock
+}
+
+type mockWriter struct {
+	s3writer.Writer
 	mock.Mock
 }
 
