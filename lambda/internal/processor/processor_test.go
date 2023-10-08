@@ -14,14 +14,19 @@ const (
 	TestRdsInstanceIdentifier = "my-instance"
 )
 
+type mockDatabase struct {
+	database.Database
+	mock.Mock
+}
+
 type mockLogCollector struct {
 	logcollector.LogCollector
 	mock.Mock
 }
 
-type mockDatabase struct {
-	database.Database
-	mock.Mock
+func (m *mockLogCollector) ValidateAndPrepareRDSInstance() error {
+	args := m.Called()
+	return args.Error(0)
 }
 
 type mockWriter struct {
